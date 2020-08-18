@@ -3,7 +3,7 @@
   remote_user: vagrant
   any_errors_fatal: true
   vars:
-    distro: melodic
+    distro: eloquent
     package: desktop
     shell: bash
   tasks:
@@ -25,7 +25,7 @@
     apt_repository:
       repo: "{{ item }}"
     loop:
-      - "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
+      - "deb http://packages.ros.org/ros2/ubuntu {{ ansible_distribution_release }} main"
 
   - name: Install packages
     apt:
@@ -34,16 +34,12 @@
       pkg: 
       - 'ros-{{ distro }}-{{ package }}'
       - python-rosdep
-      - python-rosinstall
-      - python-rosinstall-generator
-      - python-wstool
-      - build-essential
 
   - name: Setup environment
     lineinfile: 
       dest: '/home/{{ ansible_user }}/.{{ shell }}rc'
-      regexp: '^source \/opt\/ros\/melodic\/setup.{{ shell }}'
-      line: 'source /opt/ros/melodic/setup.{{ shell }}'
+      regexp: '^source \/opt\/ros\/{{ distro }}\/setup.{{ shell }}'
+      line: 'source /opt/ros/{{ distro }}/setup.{{ shell }}'
 
   - name: Initialize rosdep
     command: rosdep init
