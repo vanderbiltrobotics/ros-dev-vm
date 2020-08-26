@@ -1,41 +1,30 @@
 ## Overview
-This guide will walk you through how to get your personal computer setup for developing ROS. Some of the steps may be skipped if you already have the necessary software.
+This guide will walk you through how to get your personal computer setup for developing with ROS. This guide should work for both Windows and MacOS.
 
-## 1. Install WSL
-**W**indows **S**ubsystem for **L**inux is a feature that allows native Linux software to run on Windows with minimal overhead. More detailed information can be found [here](https://docs.microsoft.com/en-us/windows/wsl/about). WSL by itself is a windows feature which needs to be enabled, while Ubuntu can be installed from the store to get a Ubuntu shell.
+### Note on WSL2
+If you have WSL2 installed, it be must removed before using VirtualBox. WSL2 is built on Microsoft's Hyper-V hypervisor, and it is impossible to use VirtualBox's KVM hypervisor while Hyper-V is running. VirtualBox has experimental support for Hyper-V, but it will hurt performance and stability. WSL2 can be uninstalled with the following steps in a PowerShell as Administrator:
 
-1. Open PowerShell as Administrator and run:
+1. Convert any WSL2 distros to WSL1, substitute `<Distro>` with the actual distribution. You can view all distros with  `wsl --list --verbose`.
 
-    `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux`
+    `wsl --set-version <Distro> 1`
 
-2. Restart your computer when prompted.
+2. Set the default WSL version to 1
 
-3. Install [Ubuntu 18.04 from the Microsoft Store](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q)
+    `wsl --set-default-version 1`
 
-## 2. Install Vagrant and VirtualBox on Windows
+3. Disable the 'Virtual Machine Platform' component:
+
+    `dism.exe /online /disable-feature /featurename:VirtualMachinePlatforms /norestart`
+
+4. Restart your computer
+
+## 1. Install Tools
+* Install [Git](https://git-scm.com/downloads)
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [Vagrant](https://www.vagrantup.com/downloads.html)
 
-## 3. Setup WSL Environment
-All of the following commands should be copied into the Ubuntu shell. It can be started by just searching the start bar for Ubuntu.
-* Install Vagrant inside of WSL (Replace link with a newer version if available [here](https://www.vagrantup.com/downloads.html))
-```
-$ wget https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
-$ sudo dpkg -i vagrant_2.2.9_x86_64.deb
-$ echo 'export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"' >> ~/.bashrc
-$ echo 'export PATH="$PATH:/mnt/c/Program Files/Oracle/VirtualBox"' >> ~/.bashrc
-$ source ~/.bashrc
-```
-* Install Ansible
-```
-$ sudo apt update
-$ sudo apt install software-properties-common
-$ sudo apt-add-repository --yes --update ppa:ansible/ansible
-$ sudo apt install ansible
-```
-
-## 4. Start the VM
-Now, we will download and run the VagrantFile and Ansible playbook which specify how setup and configure the VM. A window should appear with Ubuntu UI relatively quickly. However, you must wait until `vagrant up` has completed successfully to start using the VM. If it fails the first time, try running `vagrant up` again.
+## 2. Start the VM
+Now, we will download and run the VagrantFile and Ansible playbook which specify how setup and configure the VM. These commands should be copied into a terminal on your computer (Powershell on Windows). A window should appear relatively quickly with the Ubuntu UI; However, you must wait until `vagrant up` has completed successfully to start using the VM. If the provisioning fails, it can be restarted with `vagrant provision`.
 ```
 $ cd ~
 $ git clone https://github.com/vanderbiltrobotics/ros-dev-vm.git
@@ -44,5 +33,5 @@ $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 ```
 
-## 5. Using the VM
-You can now close the Ubuntu terminal and use the VirtualBox interface to start and stop the VM. The VM should contain all of the ROS tools which you need for development.
+## 3. Using the VM
+You can now close the terminal and use the VirtualBox interface to start and stop the VM. The default credentials are `vagrant:vagrant`. The VM should contain all of the ROS tools which you need for development. See the ROS tutorials for information on how to use ROS. Note that this VM has been setup to automatically source `/opt/ros/<distro>/setup.bash` in `.bashrc`.
