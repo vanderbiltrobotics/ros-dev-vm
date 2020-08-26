@@ -14,7 +14,7 @@ If you have WSL2 installed, it be must removed before using VirtualBox. WSL2 is 
 
 3. Disable the 'Virtual Machine Platform' component:
 
-    `dism.exe /online /disable-feature /featurename:VirtualMachinePlatforms /norestart`
+    `dism.exe /online /disable-feature /featurename:VirtualMachinePlatform /norestart`
 
 4. Restart your computer
 
