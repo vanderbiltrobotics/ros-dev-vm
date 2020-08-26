@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
   config.vbguest.installer = Installer
 
   # Mount shared directory for ansible
-  config.vm.synced_folder ".", "/vagrant"
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
   # Provision the VM using an ansible-playbook
   config.vm.provision "ansible_local" do |ansible|
