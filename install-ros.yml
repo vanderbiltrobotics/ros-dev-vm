@@ -42,8 +42,8 @@
   - name: Setup environment
     lineinfile: 
       dest: '/home/{{ ansible_user }}/.{{ shell }}rc'
-      regexp: '^source \/opt\/ros\/melodic\/setup.{{ shell }}'
-      line: 'source /opt/ros/melodic/setup.{{ shell }}'
+      regexp: '^source \/opt\/ros\/{{ distro }}\/setup.{{ shell }}'
+      line: 'source /opt/ros/{{ distro }}/setup.{{ shell }}'
 
   - name: Initialize rosdep
     command: rosdep init
