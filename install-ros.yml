@@ -7,14 +7,6 @@
     package: desktop
     shell: bash
   tasks:
-  - name: Enable universe repository
-    apt_repository:
-      repo: "{{ item }}"
-    loop:
-      - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
-      - "deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} {{ ansible_distribution_release }}-updates universe"
-      - "deb http://security.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} {{ ansible_distribution_release }}-security universe"
-
   - name: Add ROS apt key
     apt_key:
       id: C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
@@ -23,9 +15,8 @@
 
   - name: Add ROS repo
     apt_repository:
-      repo: "{{ item }}"
-    loop:
-      - "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
+      repo: "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
+      mode: "0644"
 
   - name: Install packages
     apt:
