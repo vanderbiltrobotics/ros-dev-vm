@@ -7,6 +7,12 @@
     package: desktop
     shell: bash
   tasks:
+  - name: Add user '{{ user }}' to group vboxsf
+    user:
+      name: '{{ user }}'
+      groups: vboxsf
+      append: yes
+
   - name: Add ROS apt key
     apt_key:
       id: C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
@@ -18,13 +24,46 @@
       repo: "deb http://packages.ros.org/ros2/ubuntu {{ ansible_distribution_release }} main"
       mode: "0644"
 
-  - name: Install packages
+  - name: Install apt packages
     apt:
       update_cache: true
       state: latest
       pkg: 
       - 'ros-{{ distro }}-{{ package }}'
       - python-rosdep
+      - build-essential
+      - cmake
+      - git
+      - python3-colcon-common-extensions
+      - python3-pip
+      - python-rosdep
+      - python3-vcstool
+      - wget
+      - libasio-dev
+      - libtinyxml2-dev
+      - clang-format
+
+  - name: Install pip packages
+    pip:
+      name: "{{ item }}"
+      umask: "0022"
+    loop:
+      - argcomplete
+      - flake8
+      - flake8-blind-except
+      - flake8-builtins
+      - flake8-class-newline
+      - flake8-comprehensions
+      - flake8-deprecated
+      - flake8-docstrings
+      - flake8-import-order
+      - flake8-quotes
+      - pytest-repeat
+      - pytest-rerunfailures
+      - pytest
+      - pytest-cov
+      - pytest-runner
+      - setuptools
 
   - name: Setup environment
     lineinfile: 
@@ -42,3 +81,20 @@
     become: false
     args:
       creates: '/home/{{ ansible_user }}/.ros/rosdep/sources.cache'
+
+  - name: Install VSCode
+    snap:
+      name: code
+      classic: yes
+
+  - name: Install VSCode Extensions
+    shell:
+      cmd: "code --install-extension {{ item }} --force"
+    become: false
+    loop:
+      - ms-python.python
+      - ms-vscode.cpptools
+      - ms-vscode.cmake-tools
+      - twxs.cmake
+      - xaver.clang-format
+      - streetsidesoftware.code-spell-checker
