@@ -3,13 +3,29 @@
   remote_user: vagrant
   any_errors_fatal: true
   vars:
-    distro: eloquent
+    distro: foxy
     package: desktop
-    shell: bash
+    shell: zsh
   tasks:
-  - name: Add user '{{ user }}' to group vboxsf
+  - name: Install gantsign.oh-my-zsh role
+    shell:
+      cmd: ansible-galaxy install gantsign.oh-my-zsh
+    become: false
+
+  - name: Install oh-my-zsh
+    include_role:
+      name: gantsign.oh-my-zsh
+    vars:
+      users:
+        - username: vagrant
+          oh_my_zsh:
+            theme: agnoster
+            plugins:
+              - git
+
+  - name: Add user to group vboxsf
     user:
-      name: '{{ user }}'
+      name: '{{ ansible_user }}'
       groups: vboxsf
       append: yes
 
@@ -30,23 +46,24 @@
       state: latest
       pkg: 
       - 'ros-{{ distro }}-{{ package }}'
-      - python-rosdep
       - build-essential
       - cmake
       - git
       - python3-colcon-common-extensions
       - python3-pip
-      - python-rosdep
+      - python3-rosdep
       - python3-vcstool
       - wget
       - libasio-dev
       - libtinyxml2-dev
       - clang-format
+      - powerline
 
   - name: Install pip packages
     pip:
       name: "{{ item }}"
       umask: "0022"
+      executable: pip3
     loop:
       - argcomplete
       - flake8

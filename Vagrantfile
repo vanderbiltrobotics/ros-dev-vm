@@ -10,7 +10,7 @@ class Installer < VagrantVbguest::Installers::Linux
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "peru/ubuntu-18.04-desktop-amd64"
+  config.vm.box = "peru/ubuntu-20.04-desktop-amd64"
 
   # Set VirtualBox parameters
   config.vm.provider "virtualbox" do |vb|
@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible_local" do |ansible|
     ansible.verbose = "v"
     ansible.playbook = "install-ros.yml"
+    ansible.install_mode = :pip
   end
 
 end
