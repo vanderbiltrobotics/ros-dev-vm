@@ -29,6 +29,7 @@ Now, we will download and run the VagrantFile and Ansible playbook which specify
 $ cd ~
 $ git clone https://github.com/vanderbiltrobotics/ros-dev-vm.git
 $ cd ros-dev-vm
+$ git checkout foxy
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 ```
