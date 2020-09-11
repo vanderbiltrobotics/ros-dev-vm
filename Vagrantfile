@@ -17,6 +17,8 @@ Vagrant.configure("2") do |config|
     vb.gui = true
     vb.cpus = 4
     vb.memory = 4096
+    # Fix for Ubuntu 20.04 freezing: https://code.launchpad.net/~jchittum/livecd-rootfs/+git/livecd-rootfs/+merge/389918
+    vb.customize [ "modifyvm", :id, "--uartmode1", "file", File::NULL ]
   end
 
   # Configure vbguest to use custom installer
