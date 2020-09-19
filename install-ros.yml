@@ -5,8 +5,30 @@
   vars:
     distro: melodic
     package: desktop
-    shell: bash
+    shell: zsh
   tasks:
+  - name: Install gantsign.oh-my-zsh role
+    shell:
+      cmd: ansible-galaxy install gantsign.oh-my-zsh
+    become: false
+
+  - name: Install oh-my-zsh
+    include_role:
+      name: gantsign.oh-my-zsh
+    vars:
+      users:
+        - username: vagrant
+          oh_my_zsh:
+            theme: agnoster
+            plugins:
+              - git
+
+  - name: Add user to group vboxsf
+    user:
+      name: '{{ ansible_user }}'
+      groups: vboxsf
+      append: yes
+
   - name: Add ROS apt key
     apt_key:
       id: C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
@@ -29,6 +51,7 @@
       - python-rosinstall-generator
       - python-wstool
       - build-essential
+      - powerline
 
   - name: Setup environment
     lineinfile: 
@@ -46,3 +69,21 @@
     become: false
     args:
       creates: '/home/{{ ansible_user }}/.ros/rosdep/sources.cache'
+
+  - name: Install VSCode
+    snap:
+      name: code
+      classic: yes
+
+  - name: Install VSCode Extensions
+    shell:
+      cmd: "code --install-extension {{ item }} --force"
+    become: false
+    loop:
+      - ms-python.python
+      - ms-vscode.cpptools
+      - ms-vscode.cmake-tools
+      - twxs.cmake
+      - xaver.clang-format
+      - streetsidesoftware.code-spell-checker
+      - ms-iot.vscode-ros
